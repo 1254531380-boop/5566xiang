@@ -7,6 +7,7 @@ import { AudioManager } from './AudioManager';
 import { InputManager } from './InputManager';
 import { SaveManager } from './SaveManager';
 import { DialogueManager } from './DialogueManager';
+import { CollisionManager } from './CollisionManager';
 
 const { ccclass } = _decorator;
 
@@ -43,6 +44,7 @@ export class GameManager extends Component {
     async init(): Promise<void> {
         SceneManager.Instance.init();
         await ConfigManager.Instance.init();
+        CollisionManager.Instance.init();
         EventManager.Instance.init();
         UIManager.Instance.init();
         AudioManager.Instance.init();
@@ -72,6 +74,7 @@ export class GameManager extends Component {
     destroy(): void {
         SceneManager.Instance.destroy();
         ConfigManager.Instance.destroy();
+        CollisionManager.Instance.destroy();
         EventManager.Instance.destroy();
         UIManager.Instance.destroy();
         AudioManager.Instance.destroy();

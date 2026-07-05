@@ -1,11 +1,13 @@
-import { _decorator, Component, input, InputEventType, KeyCode, Vec3, find } from 'cc';
+import { _decorator, Component, input, InputEventType, KeyCode, find, Rect, UITransform } from 'cc';
 import { ConfigManager } from '../manager/ConfigManager';
+import { CollisionManager } from '../manager/CollisionManager';
 
 const { ccclass } = _decorator;
 
 /**
  * PlayerController
- * 玩家控制器，挂载于玩家节点，处理 WASD 移动
+ * 玩家控制器，挂载于玩家节点，处理 WASD 移动与碰撞检测
+ * 采用分轴 AABB 检测，支持沿墙滑动
  */
 @ccclass('PlayerController')
 export class PlayerController extends Component {
@@ -15,21 +17,37 @@ export class PlayerController extends Component {
     private keyD: boolean = false;
 
     private moveSpeed: number = 0;
+    private halfWidth: number = 25;
+    private halfHeight: number = 25;
 
     onLoad(): void {
         const playerConfig = ConfigManager.Instance.getPlayerConfig();
         this.moveSpeed = playerConfig ? playerConfig.moveSpeed : 200;
 
+        const ut = this.getComponent(UITransform);
+        if (ut !== null) {
+            this.halfWidth = ut.width / 2;
+            this.halfHeight = ut.height / 2;
+        }
+
         input.on(InputEventType.KEY_DOWN, this.onKeyDown, this);
         input.on(InputEventType.KEY_UP, this.onKeyUp, this);
     }
 
-    init(): void {
+    start(): void {
+        // 刷新障碍物列表
+        CollisionManager.Instance.refresh();
+
+        // 出生点定位
         const spawn = find('Canvas/PlayerSpawn');
         if (spawn !== null) {
             const pos = spawn.position;
             this.node.setPosition(pos.x, pos.y, pos.z);
         }
+    }
+
+    init(): void {
+        // 保留接口，实际初始化在 start 中完成
     }
 
     private onKeyDown(event: { keyCode: number }): void {
@@ -82,14 +100,38 @@ export class PlayerController extends Component {
             y /= len;
         }
 
-        if (x !== 0 || y !== 0) {
-            const pos = this.node.position;
-            this.node.setPosition(
-                pos.x + x * this.moveSpeed * deltaTime,
-                pos.y + y * this.moveSpeed * deltaTime,
-                pos.z
-            );
+        if (x === 0 && y === 0) {
+            return;
         }
+
+        const dx = x * this.moveSpeed * deltaTime;
+        const dy = y * this.moveSpeed * deltaTime;
+
+        const pos = this.node.position;
+        const hw = this.halfWidth;
+        const hh = this.halfHeight;
+
+        // 分轴检测：先 X 后 Y，实现沿墙滑动
+        let newX = pos.x;
+        let newY = pos.y;
+
+        // 测试 X 轴移动
+        if (dx !== 0) {
+            const rectX = new Rect(pos.x + dx - hw, pos.y - hh, hw * 2, hh * 2);
+            if (!CollisionManager.Instance.testCollision(rectX)) {
+                newX = pos.x + dx;
+            }
+        }
+
+        // 测试 Y 轴移动（基于已更新的 X）
+        if (dy !== 0) {
+            const rectY = new Rect(newX - hw, pos.y + dy - hh, hw * 2, hh * 2);
+            if (!CollisionManager.Instance.testCollision(rectY)) {
+                newY = pos.y + dy;
+            }
+        }
+
+        this.node.setPosition(newX, newY, pos.z);
     }
 
     destroy(): void {
