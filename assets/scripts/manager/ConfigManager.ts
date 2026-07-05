@@ -1,4 +1,8 @@
 import { resources, JsonAsset } from 'cc';
+import { BaseManager } from '../core/BaseManager';
+import { ManagerRegistry } from '../core/ManagerRegistry';
+import { Logger } from '../core/Logger';
+import { ResourceConst } from '../const/ResourceConst';
 
 /**
  * GameConfig
@@ -30,18 +34,22 @@ export interface SceneConfig {
 /**
  * ConfigManager
  * 负责加载和管理游戏配置
+ * 全项目禁止直接 resources.load，统一走此 Manager
  */
-export class ConfigManager {
+export class ConfigManager extends BaseManager {
     private static _instance: ConfigManager | null = null;
 
     public static get Instance(): ConfigManager {
         if (ConfigManager._instance === null) {
             ConfigManager._instance = new ConfigManager();
+            ManagerRegistry.register('ConfigManager', ConfigManager._instance);
         }
         return ConfigManager._instance;
     }
 
-    private constructor() {}
+    private constructor() {
+        super();
+    }
 
     private gameConfig: GameConfig | null = null;
     private playerConfig: PlayerConfig | null = null;
@@ -64,19 +72,19 @@ export class ConfigManager {
             const checkComplete = (): void => {
                 loadedCount++;
                 if (loadedCount >= total) {
-                    console.log('========================');
-                    console.log(`GameName: ${this.gameConfig ? this.gameConfig.gameName : ''}`);
-                    console.log(`Version: ${this.gameConfig ? this.gameConfig.version : ''}`);
-                    console.log(`MoveSpeed: ${this.playerConfig ? this.playerConfig.moveSpeed : 0}`);
-                    console.log('Config Loaded Success');
-                    console.log('========================');
+                    Logger.info('========================');
+                    Logger.info(`GameName: ${this.gameConfig ? this.gameConfig.gameName : ''}`);
+                    Logger.info(`Version: ${this.gameConfig ? this.gameConfig.version : ''}`);
+                    Logger.info(`MoveSpeed: ${this.playerConfig ? this.playerConfig.moveSpeed : 0}`);
+                    Logger.info('Config Loaded Success');
+                    Logger.info('========================');
                     resolve();
                 }
             };
 
-            resources.load('config/game', JsonAsset, (err, data) => {
+            resources.load(ResourceConst.CONFIG_GAME, JsonAsset, (err, data) => {
                 if (err || !data) {
-                    console.error('Failed to load game.json:', err);
+                    Logger.error('Failed to load game.json:', err);
                     checkComplete();
                     return;
                 }
@@ -84,9 +92,9 @@ export class ConfigManager {
                 checkComplete();
             });
 
-            resources.load('config/player', JsonAsset, (err, data) => {
+            resources.load(ResourceConst.CONFIG_PLAYER, JsonAsset, (err, data) => {
                 if (err || !data) {
-                    console.error('Failed to load player.json:', err);
+                    Logger.error('Failed to load player.json:', err);
                     checkComplete();
                     return;
                 }
@@ -94,9 +102,9 @@ export class ConfigManager {
                 checkComplete();
             });
 
-            resources.load('config/scene', JsonAsset, (err, data) => {
+            resources.load(ResourceConst.CONFIG_SCENE, JsonAsset, (err, data) => {
                 if (err || !data) {
-                    console.error('Failed to load scene.json:', err);
+                    Logger.error('Failed to load scene.json:', err);
                     checkComplete();
                     return;
                 }

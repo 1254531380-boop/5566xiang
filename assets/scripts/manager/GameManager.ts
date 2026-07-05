@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, director, find, Button } from 'cc';
+import { ManagerRegistry } from '../core/ManagerRegistry';
 import { SceneManager } from './SceneManager';
 import { ConfigManager } from './ConfigManager';
 import { EventManager } from './EventManager';
@@ -7,12 +8,16 @@ import { AudioManager } from './AudioManager';
 import { InputManager } from './InputManager';
 import { SaveManager } from './SaveManager';
 import { DialogueManager } from './DialogueManager';
+import { SceneConst } from '../const/SceneConst';
+import { UIConst } from '../const/UIConst';
+import { Logger } from '../core/Logger';
 
 const { ccclass } = _decorator;
 
 /**
  * GameManager
  * 游戏全局管理器，负责所有子管理器的生命周期与启动流程
+ * 子管理器统一通过 ManagerRegistry 注册/初始化/销毁，避免此处无限膨胀
  */
 @ccclass('GameManager')
 export class GameManager extends Component {
@@ -41,22 +46,26 @@ export class GameManager extends Component {
     }
 
     async init(): Promise<void> {
-        SceneManager.Instance.init();
-        await ConfigManager.Instance.init();
-        EventManager.Instance.init();
-        UIManager.Instance.init();
-        AudioManager.Instance.init();
-        InputManager.Instance.init();
-        SaveManager.Instance.init();
-        DialogueManager.Instance.init();
+        // 触发所有 Manager 的注册（访问 Instance getter 即完成注册到 ManagerRegistry）
+        SceneManager.Instance;
+        ConfigManager.Instance;
+        EventManager.Instance;
+        UIManager.Instance;
+        AudioManager.Instance;
+        InputManager.Instance;
+        SaveManager.Instance;
+        DialogueManager.Instance;
 
-        SceneManager.Instance.loadScene('Scene_MainMenu', () => {
+        // 统一按注册顺序串行初始化
+        await ManagerRegistry.initAll();
+
+        SceneManager.Instance.loadScene(SceneConst.MAIN_MENU, () => {
             this._setupMainMenu();
         });
     }
 
     private _setupMainMenu(): void {
-        const buttonNode = find('Canvas/Button');
+        const buttonNode = find(UIConst.MAIN_MENU_BUTTON);
         if (buttonNode !== null) {
             const button = buttonNode.getComponent(Button);
             if (button !== null) {
@@ -66,18 +75,13 @@ export class GameManager extends Component {
     }
 
     public startGame(): void {
-        SceneManager.Instance.loadScene('Scene_Village');
+        SceneManager.Instance.loadScene(SceneConst.VILLAGE);
     }
 
     destroy(): void {
-        SceneManager.Instance.destroy();
-        ConfigManager.Instance.destroy();
-        EventManager.Instance.destroy();
-        UIManager.Instance.destroy();
-        AudioManager.Instance.destroy();
-        InputManager.Instance.destroy();
-        SaveManager.Instance.destroy();
-        DialogueManager.Instance.destroy();
+        // 按注册逆序统一销毁
+        ManagerRegistry.destroyAll();
+        Logger.info('GameManager destroyed');
     }
 
     onDestroy(): void {
