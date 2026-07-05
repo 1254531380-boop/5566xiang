@@ -12,4 +12,16 @@ export class ResourceConst {
 
     /** 场景配置 */
     public static readonly CONFIG_SCENE: string = 'config/scene';
+
+    /** NPC 预制体 */
+    public static readonly PREFAB_NPC: string = 'prefabs/NPC';
+
+    /** 摇杆 UI */
+    public static readonly PREFAB_JOYSTICK: string = 'prefabs/Joystick';
+
+    /** 交互按钮 UI */
+    public static readonly PREFAB_INTERACT_BUTTON: string = 'prefabs/InteractButton';
+
+    /** 弹窗 UI */
+    public static readonly PREFAB_POPUP: string = 'prefabs/Popup';
 }

@@ -8,6 +8,8 @@ import { AudioManager } from './AudioManager';
 import { InputManager } from './InputManager';
 import { SaveManager } from './SaveManager';
 import { DialogueManager } from './DialogueManager';
+import { InteractionManager } from './InteractionManager';
+import { PlatformManager } from './PlatformManager';
 import { SceneConst } from '../const/SceneConst';
 import { UIConst } from '../const/UIConst';
 import { Logger } from '../core/Logger';
@@ -55,6 +57,8 @@ export class GameManager extends Component {
         InputManager.Instance;
         SaveManager.Instance;
         DialogueManager.Instance;
+        InteractionManager.Instance;
+        PlatformManager.Instance;
 
         // 统一按注册顺序串行初始化
         await ManagerRegistry.initAll();

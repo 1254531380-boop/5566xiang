@@ -14,4 +14,16 @@ export class UIConst {
 
     /** 玩家节点 */
     public static readonly PLAYER: string = 'Canvas/Player';
+
+    /** 交互提示 UI 节点 */
+    public static readonly INTERACTION_UI: string = 'Canvas/InputRoot/InteractButton/Label';
+
+    /** InputRoot 节点 */
+    public static readonly INPUT_ROOT: string = 'Canvas/InputRoot';
+
+    /** UIRoot 节点 */
+    public static readonly UI_ROOT: string = 'Canvas/UIRoot';
+
+    /** GameRoot 节点 */
+    public static readonly GAME_ROOT: string = 'Canvas/GameRoot';
 }
