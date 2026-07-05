@@ -220,7 +220,8 @@
     "_components": [
       { "__id__": 16 },
       { "__id__": 17 },
-      { "__id__": 18 }
+      { "__id__": 18 },
+      { "__id__": 21 }
     ],
     "_prefab": null,
     "_lpos": { "__type__": "cc.Vec3", "x": 0, "y": 150, "z": 0 },
@@ -294,5 +295,21 @@
     "restitution": 0,
     "offset": { "__type__": "cc.Vec2", "x": 0, "y": 0 },
     "size": { "__type__": "cc.Size", "width": 50, "height": 50 }
+  },
+  {
+    "__type__": "cc.RigidBody2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": { "__id__": 15 },
+    "_enabled": true,
+    "type": 1,
+    "gravityScale": 0,
+    "linearDamping": 0,
+    "angularDamping": 0,
+    "fixedRotation": true,
+    "bullet": false,
+    "enabledContactListener": false,
+    "awakeOnLoad": true
   }
 ]
