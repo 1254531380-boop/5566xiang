@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "outDir": "temp/scripts"
+  },
+  "include": ["assets/**/*.ts"],
+  "exclude": ["library", "temp", "build", "node_modules"]
+}
