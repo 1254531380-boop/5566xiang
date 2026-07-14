@@ -1,4 +1,4 @@
-import { Node, EventTarget } from 'cc';
+import { EventTarget } from 'cc';
 import { BaseManager } from '../core/BaseManager';
 import { ManagerRegistry } from '../core/ManagerRegistry';
 import { InputConst } from '../const/InputConst';

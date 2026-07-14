@@ -79,19 +79,16 @@ export class GameManager extends Component {
     }
 
     public startGame(): void {
-        SceneManager.Instance.loadScene(SceneConst.VILLAGE);
-    }
-
-    destroy(): void {
-        // 按注册逆序统一销毁
-        ManagerRegistry.destroyAll();
-        Logger.info('GameManager destroyed');
+        SceneManager.Instance.loadScene(SceneConst.GAME);
     }
 
     onDestroy(): void {
         if (GameManager._instance === this) {
-            this.destroy();
+            // 按注册逆序统一销毁
+            ManagerRegistry.destroyAll();
             GameManager._instance = null;
+            Logger.info('GameManager destroyed');
         }
+        super.onDestroy();
     }
 }

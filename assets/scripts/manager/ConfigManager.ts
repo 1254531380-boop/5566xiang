@@ -3,38 +3,14 @@ import { BaseManager } from '../core/BaseManager';
 import { ManagerRegistry } from '../core/ManagerRegistry';
 import { Logger } from '../core/Logger';
 import { ResourceConst } from '../const/ResourceConst';
-
-/**
- * GameConfig
- * 游戏基础配置
- */
-export interface GameConfig {
-    gameName: string;
-    version: string;
-}
-
-/**
- * PlayerConfig
- * 玩家配置
- */
-export interface PlayerConfig {
-    moveSpeed: number;
-}
-
-/**
- * SceneConfig
- * 场景配置
- */
-export interface SceneConfig {
-    boot: string;
-    mainMenu: string;
-    village: string;
-}
+import { GameConfig, PlayerConfig, SceneConfig } from '../config/ConfigTypes';
 
 /**
  * ConfigManager
  * 负责加载和管理游戏配置
  * 全项目禁止直接 resources.load，统一走此 Manager
+ *
+ * 配置类型定义见 config/ConfigTypes.ts
  */
 export class ConfigManager extends BaseManager {
     private static _instance: ConfigManager | null = null;

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, find, Button } from 'cc';
+import { _decorator, Component, find, Button } from 'cc';
 import { InputManager } from '../manager/InputManager';
 import { MobileUIConst } from '../const/MobileUIConst';
 import { Logger } from '../core/Logger';
@@ -51,5 +51,6 @@ export class InputSystem extends Component {
                 button.node.off(Button.EventType.CLICK, this.onInteractClick, this);
             }
         }
+        super.onDestroy();
     }
 }

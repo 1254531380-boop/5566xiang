@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, find } from 'cc';
 import { UIConst } from '../const/UIConst';
+import { Logger } from '../core/Logger';
 
 const { ccclass } = _decorator;
 
@@ -11,8 +12,11 @@ const { ccclass } = _decorator;
 export class CameraController extends Component {
     private target: Node | null = null;
 
-    init(): void {
+    onLoad(): void {
         this.target = find(UIConst.PLAYER);
+        if (this.target === null) {
+            Logger.warn('CameraController: Player node not found, will retry in lateUpdate');
+        }
     }
 
     lateUpdate(deltaTime: number): void {
@@ -28,11 +32,8 @@ export class CameraController extends Component {
         this.node.setPosition(targetPos.x, targetPos.y, cameraPos.z);
     }
 
-    destroy(): void {
-        this.target = null;
-    }
-
     onDestroy(): void {
-        this.destroy();
+        this.target = null;
+        super.onDestroy();
     }
 }

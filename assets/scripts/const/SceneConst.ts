@@ -7,8 +7,8 @@ export class SceneConst {
     public static readonly BOOT: string = 'Scene_Boot';
 
     /** 主菜单场景 */
-    public static readonly MAIN_MENU: string = 'Scene_MainMenu';
+    public static readonly MAIN_MENU: string = 'MainMenu';
 
-    /** 村庄场景 */
-    public static readonly VILLAGE: string = 'Scene_Village';
+    /** 游戏场景（玩法主场景） */
+    public static readonly GAME: string = 'Game';
 }

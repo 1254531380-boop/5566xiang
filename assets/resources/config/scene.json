@@ -1,5 +1,5 @@
 {
   "boot": "Scene_Boot",
-  "mainMenu": "Scene_MainMenu",
-  "village": "Scene_Village"
+  "mainMenu": "MainMenu",
+  "game": "Game"
 }

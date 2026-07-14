@@ -1,7 +1,6 @@
 import { _decorator, Component, Node, Vec2, EventTouch } from 'cc';
 import { InputManager } from '../manager/InputManager';
 import { InputConst } from '../const/InputConst';
-import { MobileUIConst } from '../const/MobileUIConst';
 import { Logger } from '../core/Logger';
 
 const { ccclass } = _decorator;
@@ -110,5 +109,6 @@ export class JoystickComponent extends Component {
         this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+        super.onDestroy();
     }
 }

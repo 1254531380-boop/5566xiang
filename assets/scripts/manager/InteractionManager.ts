@@ -1,9 +1,8 @@
-import { Node, Label } from 'cc';
+import { Node } from 'cc';
 import { BaseManager } from '../core/BaseManager';
 import { ManagerRegistry } from '../core/ManagerRegistry';
 import { NPCConst } from '../const/NPCConst';
 import { InputManager } from './InputManager';
-import { InputConst } from '../const/InputConst';
 import { NPCController } from '../npc/NPCController';
 
 /**
@@ -11,15 +10,17 @@ import { NPCController } from '../npc/NPCController';
  * 统一交互管理层（微信小游戏版）
  *
  * 架构原则：
- *   - Manager 是纯逻辑，不创建 Node、不监听按键/触摸
+ *   - Manager 是纯逻辑，不创建 Node、不监听按键/触摸、不操作 UI 组件
  *   - 交互由 InputManager.triggerInteract() → EVENT_INTERACT 驱动
  *   - 每帧 tick 由 InteractionSystem（场景级 Component）驱动
  *   - 场景引用由 System 层注入，Manager 不做 find
  *   - 距离计算使用平方比较
+ *   - UI 更新由 InteractionSystem 查询 currentTarget 后自行处理
  *
  * 禁止：
  *   - Manager 监听 input.on / Keyboard / Touch
  *   - Manager 知道按键 / 触摸细节
+ *   - Manager 直接操作 Label / Sprite 等 UI 组件
  */
 export class InteractionManager extends BaseManager {
     private static _instance: InteractionManager | null = null;
@@ -38,7 +39,6 @@ export class InteractionManager extends BaseManager {
 
     private npcList: NPCController[] = [];
     private playerNode: Node | null = null;
-    private promptLabel: Label | null = null;
     private currentTarget: NPCController | null = null;
     private interactDistSq: number = 0;
 
@@ -78,18 +78,9 @@ export class InteractionManager extends BaseManager {
         this.playerNode = player;
     }
 
-    public setPromptLabel(label: Label | null): void {
-        this.promptLabel = label;
-        if (label !== null) {
-            label.string = '';
-            label.enabled = false;
-        }
-    }
-
     public clearScene(): void {
         this.npcList = [];
         this.playerNode = null;
-        this.promptLabel = null;
         this.currentTarget = null;
     }
 
@@ -109,6 +100,23 @@ export class InteractionManager extends BaseManager {
                 this.currentTarget = null;
             }
         }
+    }
+
+    // ==================== 查询接口（供 System 层更新 UI） ====================
+
+    /**
+     * 获取当前交互目标（最近的可交互 NPC）
+     * InteractionSystem 据此更新交互提示 UI
+     */
+    public getCurrentTarget(): NPCController | null {
+        return this.currentTarget;
+    }
+
+    /**
+     * 是否存在可交互目标
+     */
+    public hasInteractionTarget(): boolean {
+        return this.currentTarget !== null;
     }
 
     // ==================== 每帧更新（由 System 驱动） ====================
@@ -139,16 +147,5 @@ export class InteractionManager extends BaseManager {
         }
 
         this.currentTarget = nearestNpc;
-
-        // 更新交互提示 UI
-        if (this.promptLabel !== null) {
-            if (nearestNpc !== null) {
-                this.promptLabel.string = NPCConst.INTERACTION_PROMPT;
-                this.promptLabel.enabled = true;
-            } else {
-                this.promptLabel.string = '';
-                this.promptLabel.enabled = false;
-            }
-        }
     }
 }

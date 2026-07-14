@@ -4,5 +4,11 @@
   "imported": true,
   "uuid": "11110001-0000-0000-0000-000000000001",
   "files": [],
-  "subMetas": {}
+  "subMetas": {},
+  "userData": {
+    "isBundle": true,
+    "bundleConfigID": "default",
+    "bundleName": "resources",
+    "priority": 8
+  }
 }

@@ -2,6 +2,7 @@ import { _decorator, Component, find, RigidBody2D, Vec2 } from 'cc';
 import { ConfigManager } from '../manager/ConfigManager';
 import { InputManager } from '../manager/InputManager';
 import { UIConst } from '../const/UIConst';
+import { Logger } from '../core/Logger';
 
 const { ccclass } = _decorator;
 
@@ -24,7 +25,12 @@ export class PlayerController extends Component {
 
     onLoad(): void {
         const playerConfig = ConfigManager.Instance.getPlayerConfig();
-        this.moveSpeed = playerConfig ? playerConfig.moveSpeed : 200;
+        if (playerConfig === null) {
+            Logger.error('PlayerController: playerConfig is null, movement disabled');
+            this.moveSpeed = 0;
+        } else {
+            this.moveSpeed = playerConfig.moveSpeed;
+        }
 
         this.body = this.getComponent(RigidBody2D);
     }
@@ -101,11 +107,8 @@ export class PlayerController extends Component {
         // 预留：后续 Player 自身交互逻辑
     }
 
-    destroy(): void {
-        // 无输入监听需要卸载
-    }
-
     onDestroy(): void {
-        this.destroy();
+        // 无输入监听需要卸载
+        super.onDestroy();
     }
 }

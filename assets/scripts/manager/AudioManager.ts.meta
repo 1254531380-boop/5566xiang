@@ -1,8 +1,9 @@
 {
   "ver": "4.0.23",
-  "importer": "script",
+  "importer": "typescript",
   "imported": true,
   "uuid": "22220006-0000-0000-0000-000000000006",
   "files": [],
-  "subMetas": []
+  "subMetas": {},
+  "userData": {}
 }
